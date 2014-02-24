@@ -85,14 +85,14 @@ class Pro_Log_Default {
      */
     public function addStream($stream, $path = null, $priority = null) {
         if (array_key_exists($stream, self::$_loggers)) return false;
-        if (null == $priority) {
+        if (null === $priority) {
             $priority = $this->_defaultPriority;
         }
-        if (null == $path) {
+        if (null === $path) {
+            $writer = new Zend_Log_Writer_Null();
+        } else {
             $writer = new Zend_Log_Writer_Stream($path);
             $writer->addFilter(new Zend_Log_Filter_Priority($priority));
-        } else {
-            $writer = new Zend_Log_Writer_Null();
         }
         self::$_loggers[$stream] = new Zend_Log($writer);
         return true;
