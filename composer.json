@@ -7,7 +7,7 @@
             "email": "shu.rick.ifmo@gmail.com"
         }
     ],
-    "require": {
-
+    "autoload": {
+        "psr-4": {"": "library/"}
     }
 }
