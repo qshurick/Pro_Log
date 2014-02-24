@@ -56,19 +56,24 @@ class Pro_Log_Default {
         $this->setOptions($options);
     }
 
+    protected function mapPriority($priorityName) {
+        if (array_key_exists($priorityName, self::$_logLevelMap)) {
+            return self::$_logLevelMap[$priorityName];
+        }
+        if (null !== $this->_defaultPriority) {
+            return $this->_defaultPriority;
+        }
+        return Zend_Log::ERR;
+    }
+
     protected function setOptions($options = array()) {
         $this->_defaultPriority = Zend_Log::ERR;
         if (empty($options)) {
             $this->setDefaultOptions();
         } else {
-            $confLogLevel = isset($options['level']) ? $options['level'] : "error";
-            $defaultLogLevel = Zend_Log::ERR;
-            if (array_key_exists($confLogLevel, self::$_logLevelMap)) {
-                $defaultLogLevel = self::$_logLevelMap[$confLogLevel];
-            }
-            $this->_defaultPriority = $defaultLogLevel;
+            $this->_defaultPriority = $this->mapPriority($options['level']);
             foreach ($options['stream'] as $stream => $streamOption) {
-                $this->addStream($stream, $streamOption['path'], $streamOption['level']);
+                $this->addStream($stream, $streamOption['path'], $this->mapPriority($streamOption['level']));
             }
         }
     }
