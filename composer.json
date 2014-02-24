@@ -1,0 +1,13 @@
+{
+    "name": "qshurick/pro_log",
+    "description": "Logger",
+    "authors": [
+        {
+            "name": "qshurick",
+            "email": "shu.rick.ifmo@gmail.com"
+        }
+    ],
+    "require": {
+
+    }
+}
