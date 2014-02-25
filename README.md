@@ -1,7 +1,7 @@
 Initialization
 ---
 
-ensure in application.ini:
+Ensure in application.ini:
 
 ```
     autoloaderNamespaces[] = "Pro_"
@@ -9,7 +9,7 @@ ensure in application.ini:
     config.log = APPLICATION_PATH "/configs/log.ini"
 ```
 
-ensure in include_path directory 'vendor/qshurick/pro_log/library', i.g. ensure in public_html/index.php:
+Ensure in ```include_path``` directory ```'vendor/qshurick/pro_log/library'```, i.g. in ```public_html/index.php```:
 
 ```
     set_include_path(implode(PATH_SEPARATOR, array(
@@ -26,23 +26,26 @@ Usage
 * with Zend_Registry:
 
 ```php
-Zend_Registry::get('logger')->log('Log message');
+    // Pro_Log
+    Zend_Registry::get('logger')->log('Log message');
 ```
 
 
-* direct call Pro_Log:
+* direct:
 
 ```php
+    // Pro_Log
     Pro_Log::getInstance()->log('Log message');
 ```
 
-* embed call
+* embed:
 
 ```php
     class SomeLoggedClass {
         /** ... */
         function init() {
             /** ... */
+            // Zend_Log
             $this->logger = Pro_Log::getInstance()->ensureStream('custom-logger');
             $this->logger->log('Log message', Zend_Log::INFO);
             /** ... */
