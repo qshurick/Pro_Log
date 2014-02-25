@@ -13,7 +13,10 @@ class Pro_Resource_Log extends Zend_Application_Resource_ResourceAbstract {
      * @return mixed
      */
     public function init() {
-        Pro_Log_Default::setup($this->getOptions());
+        Pro_Log::setup($this->getOptions());
+        $logger = Pro_Log::getInstance();
+        Zend_Registry::set('logger', $logger); // share logger
+        return $logger;
     }
 
 }

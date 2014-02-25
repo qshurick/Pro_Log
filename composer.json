@@ -7,10 +7,16 @@
             "email": "shu.rick.ifmo@gmail.com"
         }
     ],
+    "require-dev": {
+        "zendframework/zendframework1": "1.12.x"
+    },
+    "suggest": {
+        "zendframework/zendframework1": "This only works with Zend Framework 1.x"
+    },
     "autoload": {
         "psr-0": {
             "Pro_": "library/",
-            "Pro_Resource_": "library/"
+            "Pro_Resource_": "library/Pro/Resource"
         }
     }
 }
