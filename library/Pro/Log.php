@@ -71,9 +71,9 @@ class Pro_Log {
         if (empty($options)) {
             $this->setDefaultOptions();
         } else {
-            $this->_defaultPriority = $this->mapPriority($options['level']);
+            $this->_defaultPriority = $this->mapPriority(isset($options['level']) ? $options['level'] : null);
             foreach ($options['stream'] as $stream => $streamOption) {
-                $this->addStream($stream, $streamOption['path'], $this->mapPriority($streamOption['level']));
+                $this->addStream($stream, $streamOption['path'], $this->mapPriority(isset($streamOption['level']) ? $streamOption['level'] : null));
             }
         }
     }
@@ -104,6 +104,15 @@ class Pro_Log {
     }
 
     /**
+     * @param string $stream Stream name
+     * @return Zend_Log configured for current stream
+     */
+    public function ensureStream($stream) {
+        $this->addStream($stream);
+        return self::$_loggers[$stream];
+    }
+
+    /**
      * @param string $message Log message
      * @param string $stream Stream name
      * @param int $logLevel Message level as in Zend_Log
@@ -114,7 +123,7 @@ class Pro_Log {
             /**
              * @var $logger Zend_Log
              */
-            $logger = self::$_loggers[$stream];
+            $logger = $this->ensureStream($stream);
             $logger->log($message, $logLevel, $extra);
         }
     }
