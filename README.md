@@ -54,9 +54,8 @@ Usage
     }
 ```
 
-* ~~~deprecated (just for current compatibility)~~~
+* ~~deprecated (just for current compatibility)~~
 
 ```php
     Pro_Log::log('Log message');
 ```
-
