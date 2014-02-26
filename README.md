@@ -9,7 +9,7 @@ Ensure in application.ini:
     config.logger = APPLICATION_PATH "/configs/log.ini"
 ```
 
-Ensure in ```include_path``` directory ```'vendor/qshurick/pro_log/library'```, i.g. in ```public_html/index.php```:
+Ensure in ```include_path``` directory ```'vendor/qshurick/pro_log/library'```, e.g. in ```public_html/index.php```:
 
 ```
     set_include_path(implode(PATH_SEPARATOR, array(
