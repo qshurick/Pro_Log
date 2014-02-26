@@ -23,7 +23,7 @@ class Pro_Log {
      * @deprecated
      */
     public static function log($message, $stream = "system", $logLevel = Zend_Log::INFO, $extra = null) {
-        $message .= "[DEPRECATED] ";
+        $message = "[DEPRECATED] $message";
         Logger_Application_Logger::getInstance()->log($message, $stream, $logLevel, $extra);
     }
 
@@ -35,7 +35,7 @@ class Pro_Log {
      * @deprecated
      */
     public static function error($message) {
-        $message .= "[DEPRECATED] ";
+        $message = "[DEPRECATED] $message";
         Logger_Application_Logger::getInstance()->log($message, "system", Zend_Log::ERR);
     }
 }
