@@ -4,9 +4,9 @@ Initialization
 Ensure in application.ini:
 
 ```
-    autoloaderNamespaces[] = "Pro_"
-    pluginPaths.Pro_Resource_ = "Pro/Resource"
-    config.log = APPLICATION_PATH "/configs/log.ini"
+    autoloaderNamespaces[] = "Logger_"
+    pluginPaths.Logger_Application_Resource_ = "Logger/Application/Resource"
+    config.logger = APPLICATION_PATH "/configs/log.ini"
 ```
 
 Ensure in ```include_path``` directory ```'vendor/qshurick/pro_log/library'```, i.g. in ```public_html/index.php```:
@@ -26,7 +26,7 @@ Usage
 * with Zend_Registry:
 
 ```php
-    // Pro_Log
+    // Logger_Application_Logger
     Zend_Registry::get('logger')->log('Log message');
 ```
 
@@ -34,8 +34,8 @@ Usage
 * direct:
 
 ```php
-    // Pro_Log
-    Pro_Log::getInstance()->log('Log message');
+    // Logger_Application_Logger
+    Logger_Application_Logger::getInstance()->log('Log message');
 ```
 
 * embed:
@@ -46,7 +46,7 @@ Usage
         function init() {
             /** ... */
             // Zend_Log
-            $this->logger = Pro_Log::getInstance()->ensureStream('custom-logger');
+            $this->logger = Zend_Registry::get('logger')->ensureStream('custom-logger');
             $this->logger->log('Log message', Zend_Log::INFO);
             /** ... */
         }
@@ -54,4 +54,9 @@ Usage
     }
 ```
 
+* ~~~deprecated (just for current compatibility)~~~
+
+```php
+    Pro_Log::log('Log message');
+```
 

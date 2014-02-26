@@ -6,15 +6,15 @@
  * Time: 18:17
  */
 
-class Pro_Resource_Log extends Zend_Application_Resource_ResourceAbstract {
+class Logger_Application_Resource_Logger extends Zend_Application_Resource_ResourceAbstract {
     /**
      * Strategy pattern: initialize resource
      *
      * @return mixed
      */
     public function init() {
-        Pro_Log::setup($this->getOptions());
-        $logger = Pro_Log::getInstance();
+        Logger_Application_Logger::setup($this->getOptions());
+        $logger = Logger_Application_Logger::getInstance();
         Zend_Registry::set('logger', $logger); // share logger
         return $logger;
     }
