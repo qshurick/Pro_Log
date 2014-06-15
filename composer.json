@@ -16,7 +16,8 @@
     "autoload": {
         "psr-0": {
             "Pro_": "library/",
-            "Pro_Resource_": "library/Pro/Resource"
+            "Pro_Resource_": "library/Pro/Resource",
+            "Logger_": "library/"
         }
     }
 }
