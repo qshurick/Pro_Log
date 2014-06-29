@@ -100,6 +100,7 @@ class Logger_Application_Logger {
                 /** @var Logger_Application_ZendLogWrapper $customLogger */
                 $customLogger = clone $systemLogger;
                 $customLogger->setStream($stream);
+                $customLogger->addFilter(new Zend_Log_Filter_Priority($priority));
                 self::$_loggers[$stream] = $customLogger;
 
                 return $customLogger;

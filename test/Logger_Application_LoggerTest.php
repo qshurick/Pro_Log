@@ -18,6 +18,7 @@ class Logger_Application_LoggerTest extends PHPUnit_Framework_TestCase {
         ));
         $logger = Logger_Application_Logger::getInstance();
         $logger->addStream("system", realpath(".") . DIRECTORY_SEPARATOR . "system.log", Zend_Log::DEBUG);
+        $logger->addStream("com.daofx.SomeClass", null, Zend_Log::CRIT);
         $system = $logger->ensureStream("system");
         $custom = $logger->ensureStream("custom");
         $anotherLogger = $logger->ensureStream("com.daofx.SomeClass");
