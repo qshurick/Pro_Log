@@ -8,7 +8,8 @@
         }
     ],
     "require-dev": {
-        "zendframework/zendframework1": "1.12.x"
+        "zendframework/zendframework1": "1.12.x",
+        "phpunit/phpunit": "3.7.*"
     },
     "suggest": {
         "zendframework/zendframework1": "This only works with Zend Framework 1.x"

@@ -94,12 +94,24 @@ class Logger_Application_Logger {
             $priority = $this->_defaultPriority;
         }
         if (null === $path) {
+            if ($stream !== "system" && array_key_exists("system", self::$_loggers)) {
+                /** @var Logger_Application_ZendLogWrapper $systemLogger */
+                $systemLogger = self::$_loggers["system"];
+                /** @var Logger_Application_ZendLogWrapper $customLogger */
+                $customLogger = clone $systemLogger;
+                $customLogger->setStream($stream);
+                self::$_loggers[$stream] = $customLogger;
+
+                return $customLogger;
+            }
             $writer = new Zend_Log_Writer_Null();
         } else {
             $writer = new Zend_Log_Writer_Stream($path);
             $writer->addFilter(new Zend_Log_Filter_Priority($priority));
         }
-        self::$_loggers[$stream] = new Zend_Log($writer);
+        $logger = new Logger_Application_ZendLogWrapper($writer);
+        $logger->setStream($stream);
+        self::$_loggers[$stream] = $logger;
         return true;
     }
 
