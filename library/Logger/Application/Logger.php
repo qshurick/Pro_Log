@@ -15,6 +15,8 @@ class Logger_Application_Logger {
      * @var array Zend_Log
      */
     private static $_loggers = array();
+    private static $_errorLogPath = null;
+    private static $_systemLogPath;
     /**
      * @var array mapping config`s log level into Zend_Log
      */
@@ -90,30 +92,90 @@ class Logger_Application_Logger {
      */
     public function addStream($stream, $path = null, $priority = null) {
         if (array_key_exists($stream, self::$_loggers)) return false;
-        if (null === $priority) {
+        switch ($stream) {
+            case "system":
+                self::$_loggers[$stream] = $this->createSystemStream($path, $priority);
+                break;
+            case "error":
+                self::$_loggers[$stream] = $this->createErrorStream($path);
+                break;
+            default:
+                $logger = $this->createCustomStream($path, $priority);
+                $logger->setStream($stream);
+                self::$_loggers[$stream] = $logger;
+        }
+
+        return true;
+    }
+
+    private function createCustomStream($path = null, $priority = null) {
+        if ($priority == null) {
             $priority = $this->_defaultPriority;
         }
-        if (null === $path) {
-            if ($stream !== "system" && array_key_exists("system", self::$_loggers)) {
-                /** @var Logger_Application_ZendLogWrapper $systemLogger */
-                $systemLogger = self::$_loggers["system"];
-                /** @var Logger_Application_ZendLogWrapper $customLogger */
-                $customLogger = clone $systemLogger;
-                $customLogger->setStream($stream);
-                $customLogger->addFilter(new Zend_Log_Filter_Priority($priority));
-                self::$_loggers[$stream] = $customLogger;
 
-                return $customLogger;
-            }
-            $writer = new Zend_Log_Writer_Null();
-        } else {
+        $logger = new Logger_Application_ZendLogWrapper();
+
+        if ($path !== null) {
             $writer = new Zend_Log_Writer_Stream($path);
             $writer->addFilter(new Zend_Log_Filter_Priority($priority));
+
+            $logger->addWriter($writer);
+        } elseif (self::$_systemLogPath !== null) {
+            $writer = new Zend_Log_Writer_Stream(self::$_systemLogPath);
+            $writer->addFilter(new Zend_Log_Filter_Priority($priority));
+            $logger->addWriter($writer);
+        } else {
+            $logger->addWriter(new Zend_Log_Writer_Null());
         }
-        $logger = new Logger_Application_ZendLogWrapper($writer);
-        $logger->setStream($stream);
-        self::$_loggers[$stream] = $logger;
-        return true;
+
+        if (self::$_errorLogPath !== null) {
+            $writer = new Zend_Log_Writer_Stream(self::$_errorLogPath);
+            $writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::ERR));
+            $logger->addWriter($writer);
+        }
+
+        return $logger;
+    }
+
+    private function createErrorStream($path = null) {
+        $writer = null;
+        if ($path == null) {
+            $writer = new Zend_Log_Writer_Null();
+        } else {
+            self::$_errorLogPath = $path;
+            $writer = new Zend_Log_Writer_Stream($path);
+            $writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::ERR));
+        }
+
+        return new Logger_Application_ZendLogWrapper($writer);
+    }
+
+    private function createSystemStream($path = null, $priority = null) {
+
+        if ($priority == null) {
+            $priority = $this->_defaultPriority;
+        }
+
+        $logger = new Logger_Application_ZendLogWrapper();
+        $writer = null;
+
+        if ($path == null) {
+            $writer = new Zend_Log_Writer_Null();
+            $logger->addWriter($writer);
+        } else {
+            self::$_systemLogPath = $path;
+            $writer = new Zend_Log_Writer_Stream($path);
+            $writer->addFilter(new Zend_Log_Filter_Priority($priority));
+            $logger->addWriter($writer);
+        }
+
+        if (self::$_errorLogPath !== null) {
+            $writer = new Zend_Log_Writer_Stream(self::$_errorLogPath);
+            $writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::ERR));
+            $logger->addWriter($writer);
+        }
+
+        return $logger;
     }
 
     /**
@@ -132,15 +194,8 @@ class Logger_Application_Logger {
      * @param null|mixed $extra Additional information for logging
      */
     public function log($message, $stream = "system", $logLevel = Zend_Log::INFO, $extra = null) {
-        if (array_key_exists($stream, self::$_loggers)) {
-            /**
-             * @var $logger Zend_Log
-             */
-            $logger = $this->ensureStream($stream);
-            $logger->log($message, $logLevel, $extra);
-        } elseif ($stream !== "system") {
-            $this->log("Stream not found: \"$stream\"", "system", Zend_Log::ERR, debug_backtrace());
-            $this->log($message, "system", $logLevel, $extra);
-        }
+        /** @var Logger_Application_ZendLogWrapper $logger */
+        $logger = $this->ensureStream($stream);
+        $logger->log($message, $logLevel, $extra);
     }
 }
