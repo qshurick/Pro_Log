@@ -74,10 +74,23 @@ class Logger_Application_Logger {
             $this->setDefaultOptions();
         } else {
             $this->_defaultPriority = $this->mapPriority(isset($options['level']) ? $options['level'] : null);
-            foreach ($options['stream'] as $stream => $streamOption) {
-                $this->addStream($stream, $streamOption['path'], $this->mapPriority(isset($streamOption['level']) ? $streamOption['level'] : null));
+
+            if (array_key_exists("stream", $options)) {
+                if (array_key_exists("error", $options['stream'])) {
+                    $this->setStreamOptions("error", $options["stream"]['error']);
+                }
+                if (array_key_exists("system", $options['stream'])) {
+                    $this->setStreamOptions("system", $options["stream"]['system']);
+                }
+                foreach ($options['stream'] as $stream => $streamOption) {
+                    $this->setStreamOptions($stream, $streamOption);
+                }
             }
         }
+    }
+
+    private function setStreamOptions($stream, $streamOption) {
+        $this->addStream($stream, $streamOption['path'], $this->mapPriority(isset($streamOption['level']) ? $streamOption['level'] : null));
     }
 
     protected function setDefaultOptions() {
